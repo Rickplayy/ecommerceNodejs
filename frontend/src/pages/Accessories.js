@@ -1,0 +1,30 @@
+
+import React, { useState, useEffect } from 'react';
+import productService from '../services/productService';
+import ProductCard from '../components/ProductCard';
+import { Container, Row, Col } from 'react-bootstrap';
+
+const Accessories = () => {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    productService.getProductsByCategory('accessories').then((response) => {
+      setProducts(response.data);
+    });
+  }, []);
+
+  return (
+    <Container>
+      <h1 className="my-4">Accessories</h1>
+      <Row>
+        {products.map((product) => (
+          <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+            <ProductCard product={product} />
+          </Col>
+        ))}
+      </Row>
+    </Container>
+  );
+};
+
+export default Accessories;
