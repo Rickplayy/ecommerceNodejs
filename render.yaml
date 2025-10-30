@@ -4,6 +4,8 @@ services:
     env: node
     plan: free
     buildCommand: |
+      apt-get update -y && 
+      apt-get install -y chromium chromium-common chromium-sandbox && 
       cp -r backend/* /opt/render/project/src/ && 
       cp backend/package*.json /opt/render/project/src/ && 
       cd /opt/render/project/src && 
@@ -12,6 +14,10 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
+        value: true
+      - key: PUPPETEER_EXECUTABLE_PATH
+        value: /usr/bin/chromium
   
   - type: web
     name: ecommerce-frontend
