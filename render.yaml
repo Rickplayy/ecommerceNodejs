@@ -7,6 +7,16 @@ services:
     envVars:
       - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
         value: "true"
+      - key: DB_HOST
+        value: "containers-us-west-201.railway.app"  # Reemplaza con tu host real
+      - key: DB_PORT
+        value: "7412"  # Reemplaza con tu puerto real
+      - key: DB_NAME
+        value: "railway"  # Reemplaza con tu nombre de base de datos
+      - key: DB_USER
+        value: "root"  # Reemplaza con tu usuario
+      - key: DB_PASSWORD
+        sync: false  # Esto indica que el valor se configurará manualmente en el dashboard
     buildFilter:
       paths:
         - backend/**/*
