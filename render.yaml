@@ -3,8 +3,11 @@ services:
     name: ecommerce-backend
     env: node
     plan: free
-    buildCommand: npm install && npm run build && cd dist
-    startCommand: cd dist && node index.js
+    buildCommand: |
+      cp -r backend/* /opt/render/project/src/ && 
+      cd /opt/render/project/src && 
+      npm install
+    startCommand: node /opt/render/project/src/index.js
     envVars:
       - key: NODE_ENV
         value: production
