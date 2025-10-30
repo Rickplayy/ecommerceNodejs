@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "cd backend && node index.js",
+    "start": "node index.js",
+    "build": "mkdir -p dist && cp -r backend/* dist/ && cd dist && npm install",
     "install-backend": "cd backend && npm install",
     "install-frontend": "cd frontend && npm install",
     "build-frontend": "cd frontend && npm run build"
