@@ -1,15 +1,25 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
+import { Navbar, Nav, Container, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 const Header = ({ currentUser, onLogout }) => {
   const navigate = useNavigate();
+  const [keyword, setKeyword] = useState('');
 
   const handleLogout = () => {
     onLogout();
     navigate('/login');
+  };
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    if (keyword.trim()) {
+      navigate(`/search?q=${keyword}`);
+    } else {
+      navigate('/');
+    }
   };
 
   return (
@@ -38,7 +48,17 @@ const Header = ({ currentUser, onLogout }) => {
               <Nav.Link>Accessories</Nav.Link>
             </LinkContainer>
           </Nav>
-          <Nav>
+          <Form onSubmit={submitHandler} className="d-flex">
+            <FormControl
+              type="search"
+              placeholder="Search Products..."
+              className="me-2"
+              aria-label="Search"
+              onChange={(e) => setKeyword(e.target.value)}
+            />
+            <Button type="submit" variant="outline-success">Search</Button>
+          </Form>
+          <Nav className="ms-3">
             {currentUser ? (
               <>
                 {currentUser.role === 'admin' && (

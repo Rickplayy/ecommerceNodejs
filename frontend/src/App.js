@@ -30,6 +30,13 @@ import AdminRoute from './components/AdminRoute';
 
 
 
+import Search from './pages/Search';
+
+
+
+import Footer from './components/Footer';
+import './App.css';
+
 function App() {
 
   const [currentUser, setCurrentUser] = useState(undefined);
@@ -71,10 +78,10 @@ function App() {
   return (
 
     <Router>
-
-      <Header currentUser={currentUser} onLogout={handleLogout} />
-
-      <Routes>
+      <div className="app-container">
+        <Header currentUser={currentUser} onLogout={handleLogout} />
+        <main className="main-content">
+          <Routes>
 
         <Route path="/" element={<Accessories />} />
 
@@ -93,8 +100,12 @@ function App() {
 
         <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
 
-      </Routes>
+        <Route path="/search" element={<Search />} />
 
+          </Routes>
+        </main>
+        <Footer />
+      </div>
     </Router>
 
   );
