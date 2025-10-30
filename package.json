@@ -1,4 +1,13 @@
 {
+  "name": "ecommerce-nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "cd backend && node index.js",
+    "install-backend": "cd backend && npm install",
+    "install-frontend": "cd frontend && npm install",
+    "build-frontend": "cd frontend && npm run build"
+  },
   "dependencies": {
     "handlebars": "^4.7.8",
     "puppeteer": "^24.27.0"
