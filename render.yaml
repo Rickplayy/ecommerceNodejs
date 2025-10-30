@@ -2,8 +2,10 @@ services:
   - type: web
     name: ecommerce-backend
     env: node
-    buildCommand: npm install && npm run install-backend
-    startCommand: npm start
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node index.js
     envVars:
       - key: NODE_ENV
         value: production
