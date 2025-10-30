@@ -5,8 +5,9 @@ services:
     plan: free
     buildCommand: |
       cp -r backend/* /opt/render/project/src/ && 
+      cp backend/package*.json /opt/render/project/src/ && 
       cd /opt/render/project/src && 
-      npm install
+      npm install --production
     startCommand: node /opt/render/project/src/index.js
     envVars:
       - key: NODE_ENV
