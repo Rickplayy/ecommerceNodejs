@@ -3,13 +3,14 @@ services:
     name: ecommerce-backend
     env: node
     plan: free
-    buildCommand: |
-      apt-get update -y && 
-      apt-get install -y chromium chromium-common chromium-sandbox && 
-      cp -r backend/* /opt/render/project/src/ && 
-      cp backend/package*.json /opt/render/project/src/ && 
-      cd /opt/render/project/src && 
-      npm install --production
+    buildCommand: cp -r backend/* /opt/render/project/src/ && cd /opt/render/project/src && npm install --production
+    envVars:
+      - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
+        value: "true"
+    buildFilter:
+      paths:
+        - backend/**/*
+    dockerCommand: apt-get update -y && apt-get install -y chromium
     startCommand: node /opt/render/project/src/index.js
     envVars:
       - key: NODE_ENV
