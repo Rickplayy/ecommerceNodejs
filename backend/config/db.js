@@ -1,23 +1,20 @@
 
 const { Sequelize } = require('sequelize');
 
-let sequelize;
-
-if (process.env.DATABASE_URL) {
-  sequelize = new Sequelize(process.env.DATABASE_URL, {
-    dialect: 'mysql',
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false
-      }
-    }
-  });
-} else {
-  sequelize = new Sequelize('ecommercee', 'root', 'root', {
-    host: 'localhost',
-    dialect: 'mysql'
-  });
-}
+const sequelize = new Sequelize({
+  database: process.env.RDS_DB_NAME || 'ecommercee',
+  username: process.env.RDS_USERNAME || 'root',
+  password: process.env.RDS_PASSWORD || 'root',
+  host: process.env.RDS_HOSTNAME || 'localhost',
+  port: process.env.RDS_PORT || 3306,
+  dialect: 'mysql',
+  dialectOptions: {
+    ssl: process.env.NODE_ENV === 'production' ? {
+      require: true,
+      rejectUnauthorized: false
+    } : null
+  },
+  logging: process.env.NODE_ENV !== 'production' ? console.log : false
+});
 
 module.exports = sequelize;
