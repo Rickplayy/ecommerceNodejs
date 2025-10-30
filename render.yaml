@@ -3,8 +3,7 @@ services:
     name: ecommerce-backend
     env: node
     plan: free
-    rootDir: backend
-    buildCommand: npm install
+    buildCommand: npm install && cp -r backend/* . && npm install
     startCommand: node index.js
     envVars:
       - key: NODE_ENV
