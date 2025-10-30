@@ -1,15 +1,23 @@
 
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME || 'ecommercee',
-  process.env.DB_USER || 'root',
-  process.env.DB_PASSWORD || 'root',
-  {
-    host: process.env.DB_HOST || 'localhost',
+let sequelize;
+
+if (process.env.DATABASE_URL) {
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'mysql',
-    port: process.env.DB_PORT || 3306
-  }
-);
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
+  });
+} else {
+  sequelize = new Sequelize('ecommercee', 'root', 'root', {
+    host: 'localhost',
+    dialect: 'mysql'
+  });
+}
 
 module.exports = sequelize;
