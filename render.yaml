@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: ecommerce-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+  
+  - type: web
+    name: ecommerce-frontend
+    env: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./build

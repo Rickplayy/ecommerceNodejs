@@ -23,7 +23,7 @@ const cartRoutes = require('./routes/cart');
 const checkoutRoutes = require('./routes/checkout');
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
