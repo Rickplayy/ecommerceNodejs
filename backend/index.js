@@ -45,6 +45,16 @@ app.use(bodyParser.json());
 // POST /api/cart/add route
 
 
+// Configurar CORS para permitir tu frontend de S3
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'https://ecommerce-rockpa-frontend.s3-website.us-east-2.amazonaws.com',
+    'http://ecommerce-rockpa-frontend.s3-website.us-east-2.amazonaws.com'
+  ],
+  credentials: true
+}));
+
 // GET /api/cart route
 
 

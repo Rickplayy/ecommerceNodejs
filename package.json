@@ -10,6 +10,7 @@
     "build-frontend": "cd frontend && npm run build"
   },
   "dependencies": {
+    "dotenv": "^17.2.3",
     "handlebars": "^4.7.8",
     "puppeteer": "^24.27.0"
   }
