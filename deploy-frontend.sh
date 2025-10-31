@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Variables (reemplaza estos valores)
-BUCKET_NAME="tu-nombre-de-bucket"
+BUCKET_NAME="ecommerce-rockpa-frontend"
 DISTRIBUTION_ID="tu-id-de-cloudfront"  # opcional
 
 # Construir la aplicación
