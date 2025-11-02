@@ -2,5 +2,11 @@
   "dependencies": {
     "handlebars": "^4.7.8",
     "puppeteer": "^24.27.0"
+  },
+  "scripts": {
+    "start:dev": "concurrently \"npm start --prefix backend\" \"npm start --prefix frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }
