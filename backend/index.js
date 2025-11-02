@@ -1,4 +1,3 @@
-
 console.log('--- Executing index.js (DEBUG) ---');
 
 require('dotenv').config();
@@ -16,6 +15,7 @@ const CartItem = require('./models/CartItem');
 // Import middleware
 const auth = require('./middleware/auth');
 
+// Import routes
 const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/products');
 const adminRoutes = require('./routes/admin');
@@ -39,42 +39,98 @@ CartItem.belongsTo(Product);
 Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
 
-app.use(cors());
-app.use(bodyParser.json());
-
-// POST /api/cart/add route
-
-
-// Configurar CORS para permitir tu frontend de S3
+// Configure CORS
 app.use(cors({
   origin: [
     'http://localhost:3000',
+    'http://localhost:3001',
     'https://ecommerce-rockpa-frontend.s3-website.us-east-2.amazonaws.com',
     'http://ecommerce-rockpa-frontend.s3-website.us-east-2.amazonaws.com'
   ],
   credentials: true
 }));
 
-// GET /api/cart route
+// Middlewares
+app.use(bodyParser.json());
+app.use(express.json()); // Alternative to bodyParser
 
+// Test route
+app.get('/api/test', (req, res) => {
+  res.json({ 
+    message: '¡Backend funcionando correctamente!', 
+    timestamp: new Date() 
+  });
+});
 
+// Health check route
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    message: 'Server is running',
+    timestamp: new Date() 
+  });
+});
+
+// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/checkout', checkoutRoutes);
 
-sequelize.authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully.');
+// Start server function
+async function startServer() {
+  try {
+    // Authenticate database connection
+    await sequelize.authenticate();
+    console.log('✅ Connection has been established successfully.');
+    
     // Sync all models
-    sequelize.sync({ alter: true }).then(() => { // Use { alter: true } to update tables
-      console.log('All models were synchronized successfully.');
-      app.listen(port, () => {
-        console.log(`Server is running on port ${port}`);
-      });
+    await sequelize.sync({ alter: true }); // Use { alter: true } to update tables
+    console.log('✅ All models were synchronized successfully.');
+    
+    // Create sample products if database is empty
+    const productsCount = await Product.count();
+    if (productsCount === 0) {
+      await Product.bulkCreate([
+        {
+          name: 'Camiseta Básica',
+          description: 'Camiseta de algodón 100%',
+          price: 29.99,
+          image: '/images/tshirt.jpg',
+          category: 'men'
+        },
+        {
+          name: 'Jeans Clásicos',
+          description: 'Jeans ajustados para mujer',
+          price: 79.99,
+          image: '/images/jeans.jpg', 
+          category: 'women'
+        },
+        {
+          name: 'Gorra Deportiva',
+          description: 'Gorra ajustable',
+          price: 24.99,
+          image: '/images/cap.jpg',
+          category: 'accessories'
+        }
+      ]);
+      console.log('✅ Sample products created');
+    }
+    
+    // Start listening
+    app.listen(port, () => {
+      console.log(`🚀 Server is running on port ${port}`);
+      console.log(`📚 API available at: http://localhost:${port}/api`);
+      console.log(`🏥 Health check: http://localhost:${port}/api/health`);
     });
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
+    
+  } catch (error) {
+    console.error('❌ Unable to connect to the database:', error);
+    console.error('❌ Server startup error:', error);
+    process.exit(1); // Exit if can't connect to database
+  }
+}
+
+// Start the server
+startServer();

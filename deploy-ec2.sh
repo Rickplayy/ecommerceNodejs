@@ -26,15 +26,31 @@ cd backend
 npm install
 
 # Crear archivo de variables de entorno
+# IMPORTANT: Please replace the placeholder values below with your actual AWS credentials.
+# You can also use environment variables to populate these values.
 cat > .env << EOL
 NODE_ENV=production
-RDS_HOSTNAME=${RDS_HOSTNAME}
-RDS_USERNAME=${RDS_USERNAME}
-RDS_PASSWORD=${RDS_PASSWORD}
-RDS_DB_NAME=${RDS_DB_NAME}
-RDS_PORT=${RDS_PORT}
-JWT_SECRET=${JWT_SECRET}
+
+# RDS Database
+RDS_HOSTNAME=${RDS_HOSTNAME:-ecommerce-db.cvgmyimqg3eh.us-east-2.rds.amazonaws.com}
+RDS_USERNAME=${RDS_USERNAME:-admin}
+RDS_PASSWORD=${RDS_PASSWORD:-rockpa123}
+RDS_DB_NAME=${RDS_DB_NAME:-ecommerce-db}
+RDS_PORT=${RDS_PORT:-3306}
+
+# S3 Bucket
+S3_BUCKET_NAME=${S3_BUCKET_NAME:-ecommerce-rockpa-frontend }
+AWS_REGION=${AWS_REGION:-us-east-2}
+AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-AKIARUUMNZKDCJFDGQK7}
+AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-0pbT9KqDkIJd49QQ6dmE/PLYRhq7pp8uCkRxXJQk}
+
+# JWT Secret
+JWT_SECRET=${JWT_SECRET:-your_jwt_secret}
+
+# Server Port
 PORT=3001
+
+# Puppeteer
 PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 EOL
 

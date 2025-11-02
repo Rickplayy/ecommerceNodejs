@@ -1,6 +1,8 @@
 
 const express = require('express');
 const multer = require('multer');
+const { S3Client } = require('@aws-sdk/client-s3');
+const multerS3 = require('multer-s3');
 const path = require('path');
 const Product = require('../models/Product');
 const auth = require('../middleware/auth');
@@ -8,30 +10,42 @@ const adminAuth = require('../middleware/adminAuth');
 
 const router = express.Router();
 
-// Multer storage configuration
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public/uploads/');
+// Configure AWS S3
+const s3 = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname)); // Append extension
-  }
 });
 
-const upload = multer({ storage: storage });
+// Multer-S3 storage configuration
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: process.env.S3_BUCKET_NAME,
+    acl: 'public-read',
+    metadata: function (req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: function (req, file, cb) {
+      cb(null, Date.now().toString() + path.extname(file.originalname));
+    },
+  }),
+});
 
 // Route to add a new product
 router.post('/products', [auth, adminAuth, upload.single('image')], async (req, res) => {
   try {
     const { name, description, price, category } = req.body;
-    const image = 'uploads/' + req.file.filename; // Get file path from multer
+    const image = req.file.location; // Get file path from multer-s3
 
     const newProduct = await Product.create({
       name,
       description,
       price,
       category,
-      image: image
+      image: image,
     });
 
     res.status(201).json(newProduct);
