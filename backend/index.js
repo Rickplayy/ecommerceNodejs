@@ -40,6 +40,10 @@ Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
 
 // Configure CORS
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Private-Network', 'true');
+  next();
+});
 app.use(cors({
   origin: [
     'http://localhost:3000',
