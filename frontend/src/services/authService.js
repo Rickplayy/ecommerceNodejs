@@ -1,20 +1,19 @@
 
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3001/api/auth/';
+const API_URL = 'http://18.218.103.28:3001/api/auth/';
 
 const register = (userData) => {
   return axios.post(API_URL + 'register', userData);
 };
 
-const login = (userData) => {
-  return axios.post(API_URL + 'login', userData).then(response => {
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-    }
-    return response.data;
-  });
+const login = async (userData) => {
+  const response = await axios.post(API_URL + 'login', userData);
+  if (response.data.token) {
+    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('user', JSON.stringify(response.data.user));
+  }
+  return response.data.user;
 };
 
 const logout = () => {

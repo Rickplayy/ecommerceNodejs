@@ -14,9 +14,13 @@ const Login = ({ onLogin }) => {
     setError('');
 
     try {
-      await authService.login({ email, password });
-      onLogin();
-      navigate('/accessories');
+      const user = await authService.login({ email, password });
+      onLogin(user);
+      if (user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/accessories');
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     }

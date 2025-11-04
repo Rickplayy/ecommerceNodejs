@@ -1,8 +1,8 @@
 
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3001/api/cart/';
-const BASE_URL = 'http://localhost:3001/';
+const API_URL = 'http://18.218.103.28:3001/api/cart/';
+const BASE_URL = 'http://18.218.103.28:3001/';
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');
