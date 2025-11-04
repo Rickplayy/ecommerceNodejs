@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 
-const API_URL = 'http://18.218.103.28:3001/api/auth/';
+const API_URL = 'http://Rockpa-env.eba-nuzetjmv.us-east-2.elasticbeanstalk.com/api/auth/';
 
 const register = (userData) => {
   return axios.post(API_URL + 'register', userData);

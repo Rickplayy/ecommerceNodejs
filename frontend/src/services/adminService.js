@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 
-const API_URL = 'http://18.218.103.28:3001/api/admin/';
+const API_URL = 'http://Rockpa-env.eba-nuzetjmv.us-east-2.elasticbeanstalk.com/api/admin/';
 
 const getAuthHeaders = (contentType = 'application/json') => {
   const token = localStorage.getItem('token');
