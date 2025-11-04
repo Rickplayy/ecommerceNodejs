@@ -57,9 +57,9 @@ function App() {
 
 
 
-  const handleLogin = () => {
+  const handleLogin = (user) => {
 
-    setCurrentUser(authService.getCurrentUser());
+    setCurrentUser(user);
 
   };
 

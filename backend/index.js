@@ -25,6 +25,16 @@ const checkoutRoutes = require('./routes/checkout');
 const app = express();
 const port = process.env.PORT || 3001;
 
+const corsOptions = {
+  origin: [
+    'http://ecommerce-rockpa-frontend.s3-website.us-east-2.amazonaws.com'
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
 
@@ -38,21 +48,6 @@ CartItem.belongsTo(Product);
 
 Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
-
-// Configure CORS
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Private-Network', 'true');
-  next();
-});
-app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:3001',
-    'https://ecommerce-rockpa-frontend.s3-website.us-east-2.amazonaws.com',
-    'http://ecommerce-rockpa-frontend.s3-website.us-east-2.amazonaws.com'
-  ],
-  credentials: true
-}));
 
 // Middlewares
 app.use(bodyParser.json());

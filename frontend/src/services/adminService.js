@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3001/api/admin/';
+const API_URL = 'http://18.218.103.28:3001/api/admin/';
 
 const getAuthHeaders = (contentType = 'application/json') => {
   const token = localStorage.getItem('token');
