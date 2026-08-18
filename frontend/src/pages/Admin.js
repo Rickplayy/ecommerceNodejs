@@ -123,7 +123,7 @@ const Admin = () => {
             <ListGroup.Item key={product.id}>
               <Row className="align-items-center">
                 <Col md={2}>
-                  <Image src={`http://localhost:3001/${product.image}`} alt={product.name} fluid rounded />
+                  <Image src={`${productService.BASE_URL}${product.image}`} alt={product.name} fluid rounded />
                 </Col>
                 <Col md={6}>
                   <h5>{product.name}</h5>

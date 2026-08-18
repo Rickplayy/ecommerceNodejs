@@ -20,7 +20,7 @@ const ProductCard = ({ product }) => {
 
   return (
     <Card style={{ width: '18rem', margin: '1rem' }}>
-      <Card.Img variant="top" src={`http://localhost:3001/${product.image}`} />
+      <Card.Img variant="top" src={`${cartService.BASE_URL}${product.image}`} />
       <Card.Body>
         <Card.Title>{product.name}</Card.Title>
         <Card.Text>{product.description}</Card.Text>

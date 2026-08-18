@@ -15,8 +15,11 @@ const searchProducts = (keyword) => {
   return axios.get(`${API_URL}search?q=${keyword}`);
 };
 
+const BASE_URL = (process.env.REACT_APP_API_URL || 'http://localhost:3001/api').replace('/api', '');
+
 export default {
   getProductsByCategory,
   getAllProducts,
   searchProducts,
+  BASE_URL,
 };
