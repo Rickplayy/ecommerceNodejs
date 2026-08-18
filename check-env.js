@@ -1,21 +1,21 @@
-console.log('🔍 Checking environment variables...');
+console.log('Checking environment variables...');
 
 const requiredEnvVars = [
   'RDS_DB_NAME',
-  'RDS_USERNAME', 
+  'RDS_USERNAME',
   'RDS_PASSWORD',
   'RDS_HOSTNAME'
 ];
 
 requiredEnvVars.forEach(envVar => {
   if (process.env[envVar]) {
-    console.log(`✅ ${envVar}: ${envVar.includes('PASSWORD') ? '***' : process.env[envVar]}`);
+    console.log(` ${envVar}: ${envVar.includes('PASSWORD') ? '***' : process.env[envVar]}`);
   } else {
-    console.log(`❌ ${envVar}: NOT FOUND`);
+    console.log(` ${envVar}: NOT FOUND`);
   }
 });
 
-console.log('\n📋 Complete process.env:');
+console.log('\n Complete process.env:');
 console.log({
   RDS_DB_NAME: process.env.RDS_DB_NAME,
   RDS_USERNAME: process.env.RDS_USERNAME,

@@ -3,7 +3,7 @@ const User = require('../models/User');
 
 const adminAuth = async (req, res, next) => {
   try {
-    // req.userData is set by the previous auth middleware
+
     const user = await User.findByPk(req.userData.userId);
 
     if (user && user.role === 'admin') {

@@ -7,7 +7,7 @@ let sequelize;
 if (process.env.USE_LOCAL_DB === 'true') {
   sequelize = new Sequelize({
     dialect: 'sqlite',
-    storage: './database.sqlite', // File-based local database
+    storage: './database.sqlite',
     logging: false
   });
 } else {
@@ -48,7 +48,7 @@ async function createDatabaseIfNotExists() {
         rejectUnauthorized: false
       }
     });
-    
+
     await connection.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.RDS_DB_NAME}\``);
     await connection.end();
     console.log('RDS database check completed');
