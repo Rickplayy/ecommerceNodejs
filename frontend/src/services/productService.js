@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 
-const API_URL = 'http://Rockpa-env.eba-nuzetjmv.us-east-2.elasticbeanstalk.com/api/products/';
+const API_URL = (process.env.REACT_APP_API_URL || 'http://localhost:3001/api') + '/products/';
 
 const getProductsByCategory = (category) => {
   return axios.get(API_URL + 'category/' + category);

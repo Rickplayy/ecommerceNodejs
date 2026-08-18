@@ -10,35 +10,48 @@ const adminAuth = require('../middleware/adminAuth');
 
 const router = express.Router();
 
-// Configure AWS S3
-const s3 = new S3Client({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  },
-});
+let upload;
+if (process.env.USE_LOCAL_DB === 'true') {
+  const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'public/uploads/')
+    },
+    filename: function (req, file, cb) {
+      cb(null, Date.now().toString() + path.extname(file.originalname))
+    }
+  });
+  upload = multer({ storage: storage });
+} else {
+  // Configure AWS S3
+  const s3 = new S3Client({
+    region: process.env.AWS_REGION,
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    },
+  });
 
-// Multer-S3 storage configuration
-const upload = multer({
-  storage: multerS3({
-    s3: s3,
-    bucket: process.env.S3_BUCKET_NAME,
-    acl: 'public-read',
-    metadata: function (req, file, cb) {
-      cb(null, { fieldName: file.fieldname });
-    },
-    key: function (req, file, cb) {
-      cb(null, Date.now().toString() + path.extname(file.originalname));
-    },
-  }),
-});
+  // Multer-S3 storage configuration
+  upload = multer({
+    storage: multerS3({
+      s3: s3,
+      bucket: process.env.S3_BUCKET_NAME,
+      acl: 'public-read',
+      metadata: function (req, file, cb) {
+        cb(null, { fieldName: file.fieldname });
+      },
+      key: function (req, file, cb) {
+        cb(null, Date.now().toString() + path.extname(file.originalname));
+      },
+    }),
+  });
+}
 
 // Route to add a new product
 router.post('/products', [auth, adminAuth, upload.single('image')], async (req, res) => {
   try {
     const { name, description, price, category } = req.body;
-    const image = req.file.location; // Get file path from multer-s3
+    const image = req.file ? (req.file.location || `/uploads/${req.file.filename}`) : null;
 
     const newProduct = await Product.create({
       name,

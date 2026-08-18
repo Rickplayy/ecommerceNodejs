@@ -1,8 +1,8 @@
 
 import axios from 'axios';
 
-const API_URL = 'http://Rockpa-env.eba-nuzetjmv.us-east-2.elasticbeanstalk.com/api/cart/';
-const BASE_URL = 'http://Rockpa-env.eba-nuzetjmv.us-east-2.elasticbeanstalk.com/';
+const API_URL = (process.env.REACT_APP_API_URL || 'http://localhost:3001/api') + '/cart/';
+const BASE_URL = (process.env.REACT_APP_API_URL || 'http://localhost:3001/api').replace('/api', '/');
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('token');

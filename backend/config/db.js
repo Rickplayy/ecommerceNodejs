@@ -2,21 +2,31 @@ require('dotenv').config();
 
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize({
-  database: process.env.RDS_DB_NAME, // ← SIN valor por defecto
-  username: process.env.RDS_USERNAME, // ← SIN valor por defecto  
-  password: process.env.RDS_PASSWORD, // ← SIN valor por defecto
-  host: process.env.RDS_HOSTNAME, // ← SIN 'localhost'
-  port: process.env.RDS_PORT || 3306,
-  dialect: 'mysql',
-  dialectOptions: {
-    connectTimeout: 60000,
-    ssl: {
-      require: true,
-      rejectUnauthorized: false
+let sequelize;
+
+if (process.env.USE_LOCAL_DB === 'true') {
+  sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: './database.sqlite', // File-based local database
+    logging: false
+  });
+} else {
+  sequelize = new Sequelize({
+    database: process.env.RDS_DB_NAME,
+    username: process.env.RDS_USERNAME,
+    password: process.env.RDS_PASSWORD,
+    host: process.env.RDS_HOSTNAME,
+    port: process.env.RDS_PORT || 3306,
+    dialect: 'mysql',
+    dialectOptions: {
+      connectTimeout: 60000,
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
     }
-  }
-});
+  });
+}
 
 // Función mejorada para crear base de datos si no existe
 const mysql = require('mysql2/promise');
