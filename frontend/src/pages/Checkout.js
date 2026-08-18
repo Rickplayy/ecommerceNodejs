@@ -50,7 +50,8 @@ const Checkout = () => {
 
   const downloadTicket = async () => {
     try {
-      const response = await axios.post('http://localhost:3001/api/checkout/generate-pdf', {
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+      const response = await axios.post(`${API_URL}/checkout/generate-pdf`, {
         items: cart.items,
         total: cart.total,
         last4: cardInfo.number.slice(-4)
