@@ -51,12 +51,14 @@ const Checkout = () => {
   const downloadTicket = async () => {
     try {
       const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+      const token = localStorage.getItem('token');
       const response = await axios.post(`${API_URL}/checkout/generate-pdf`, {
         items: cart.items,
         total: cart.total,
         last4: cardInfo.number.slice(-4)
       }, {
         responseType: 'blob',
+        headers: { Authorization: `Bearer ${token}` }
       });
 
       const blob = new Blob([response.data], { type: 'application/pdf' });
