@@ -82,6 +82,7 @@ router.get('/', auth, async (req, res) => {
 // Update cart item quantity
 router.put('/:productId', auth, async (req, res) => {
   const { productId } = req.params;
+  const { quantity } = req.body;
   const userId = req.userData.userId;
 
   try {
@@ -99,12 +100,32 @@ router.put('/:productId', auth, async (req, res) => {
       return res.status(404).json({ message: 'Cart item not found' });
     }
 
+    if (quantity <= 0) {
+      await cartItem.destroy();
+      return res.status(200).json({ message: 'Item removed from cart' });
+    }
+
     cartItem.quantity = quantity;
     await cartItem.save();
 
     res.status(200).json({ message: 'Cart item quantity updated', cartItem });
   } catch (error) {
     console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Clear entire cart
+router.delete('/clear/all', auth, async (req, res) => {
+  const userId = req.userData.userId;
+  try {
+    const cart = await Cart.findOne({ where: { UserId: userId } });
+    if (cart) {
+      await CartItem.destroy({ where: { CartId: cart.id } });
+    }
+    res.status(200).json({ message: 'Cart cleared successfully' });
+  } catch (error) {
+    console.error('Error clearing cart:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });

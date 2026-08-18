@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 
 const API_URL = (process.env.REACT_APP_API_URL || 'http://localhost:3001/api') + '/cart/';
@@ -17,13 +16,25 @@ const addToCart = (productId, quantity) => {
   return axios.post(API_URL + 'add', { productId, quantity }, getAuthHeaders());
 };
 
+const updateQuantity = (productId, quantity) => {
+  return axios.put(API_URL + productId, { quantity }, getAuthHeaders());
+};
+
 const deleteItem = (productId) => {
   return axios.delete(API_URL + productId, getAuthHeaders());
 };
 
-export default {
+const clearCart = () => {
+  return axios.delete(API_URL + 'clear/all', getAuthHeaders());
+};
+
+const cartService = {
   getCart,
   addToCart,
+  updateQuantity,
   deleteItem,
+  clearCart,
   BASE_URL,
 };
+
+export default cartService;

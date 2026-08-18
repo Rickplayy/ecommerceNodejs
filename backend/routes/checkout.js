@@ -8,6 +8,8 @@ const path = require('path');
 const { sendEmail } = require('../services/emailService');
 const auth = require('../middleware/auth');
 const User = require('../models/User');
+const Cart = require('../models/Cart');
+const CartItem = require('../models/CartItem');
 
 router.post('/generate-pdf', auth, async (req, res) => {
     try {
@@ -48,10 +50,38 @@ router.post('/generate-pdf', auth, async (req, res) => {
             headless: true,
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         };
+
         if (process.env.PUPPETEER_EXECUTABLE_PATH && fs.existsSync(process.env.PUPPETEER_EXECUTABLE_PATH)) {
             launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
         }
-        const browser = await puppeteer.launch(launchOptions);
+
+        const fallbackPaths = [
+            'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+            'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+            'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+            'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
+            '/usr/bin/chromium',
+            '/usr/bin/google-chrome',
+            '/usr/bin/chromium-browser'
+        ];
+
+        let browser;
+        try {
+            browser = await puppeteer.launch(launchOptions);
+        } catch (launchErr) {
+            console.warn('Standard Puppeteer launch failed, trying system browsers:', launchErr.message);
+            for (const p of fallbackPaths) {
+                if (fs.existsSync(p)) {
+                    try {
+                        browser = await puppeteer.launch({ ...launchOptions, executablePath: p });
+                        break;
+                    } catch (e) {
+                        // continue
+                    }
+                }
+            }
+            if (!browser) throw launchErr;
+        }
         const page = await browser.newPage();
         await page.setContent(html, { waitUntil: 'networkidle0' });
         const pdfBuffer = await page.pdf({ format: 'A4' });
@@ -70,6 +100,16 @@ router.post('/generate-pdf', auth, async (req, res) => {
                 }
             ]
         });
+
+        // Clear user's cart in database after successful purchase
+        try {
+            const userCart = await Cart.findOne({ where: { UserId: userId } });
+            if (userCart) {
+                await CartItem.destroy({ where: { CartId: userCart.id } });
+            }
+        } catch (clearErr) {
+            console.error('Error clearing cart after purchase:', clearErr);
+        }
 
         res.set({
             'Content-Type': 'application/pdf',

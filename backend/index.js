@@ -86,37 +86,94 @@ async function startServer() {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
 
-    // Sync all models
-    await sequelize.sync({ alter: true }); // Use { alter: true } to update tables
+    // Sync all models safely without dropping tables
+    await sequelize.sync();
     console.log('All models were synchronized successfully.');
 
-    // Create sample products if database is empty
+    // Create initial catalog products if database is empty
     const productsCount = await Product.count();
     if (productsCount === 0) {
       await Product.bulkCreate([
         {
-          name: 'Camiseta Básica',
-          description: 'Camiseta de algodón 100%',
-          price: 29.99,
-          image: '/images/tshirt.jpg',
+          name: 'Anillo chapado en oro',
+          description: 'Anillo chapado en oro con zirconia',
+          price: 600,
+          image: '/uploads/1787087273690.jpg',
+          category: 'accessories'
+        },
+        {
+          name: 'Playera sin mangas',
+          description: 'Playera sin mangas de verano',
+          price: 300,
+          image: '/uploads/1787087304210.jpg',
           category: 'men'
         },
         {
-          name: 'Jeans Clásicos',
-          description: 'Jeans ajustados para mujer',
-          price: 79.99,
-          image: '/images/jeans.jpg',
+          name: 'Camisa para playa',
+          description: 'Camisa para playa azul con blanco',
+          price: 400,
+          image: '/uploads/1787087379179.jpg',
+          category: 'men'
+        },
+        {
+          name: 'Camisa para playa cuadros',
+          description: 'Camisa para playa de cuadros',
+          price: 500,
+          image: '/uploads/1787087413991.jpg',
+          category: 'men'
+        },
+        {
+          name: 'Vestido rojo',
+          description: 'Vestido de noche',
+          price: 800,
+          image: '/uploads/1787087448374.jpg',
           category: 'women'
         },
         {
-          name: 'Gorra Deportiva',
-          description: 'Gorra ajustable',
-          price: 24.99,
-          image: '/images/cap.jpg',
+          name: 'Vestido blanco',
+          description: 'Vestido para verano',
+          price: 800,
+          image: '/uploads/1787087465392.jpg',
+          category: 'women'
+        },
+        {
+          name: 'Vestido beige',
+          description: 'Vestido para verano',
+          price: 800,
+          image: '/uploads/1787087489262.jpg',
+          category: 'women'
+        },
+        {
+          name: 'Cadena de plata',
+          description: 'Cadena de plata .925',
+          price: 1800,
+          image: '/uploads/1787087529113.jpg',
+          category: 'accessories'
+        },
+        {
+          name: 'Pulsera de plata',
+          description: 'Pulsera de plata .925',
+          price: 800,
+          image: '/uploads/1787087548515.jpg',
           category: 'accessories'
         }
       ]);
-      console.log('Sample products created');
+      console.log('Initial catalog products seeded successfully.');
+    }
+
+    // Ensure default admin user exists if empty
+    const adminExists = await User.findOne({ where: { email: 'admin@example.com' } });
+    if (!adminExists) {
+      const bcrypt = require('bcrypt');
+      const hashedPassword = await bcrypt.hash('adminpassword', 10);
+      const adminUser = await User.create({
+        name: 'Admin User',
+        email: 'admin@example.com',
+        password: hashedPassword,
+        role: 'admin'
+      });
+      await Cart.create({ UserId: adminUser.id });
+      console.log('Admin user initialized.');
     }
 
     // Start listening

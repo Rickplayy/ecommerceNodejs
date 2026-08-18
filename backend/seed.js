@@ -1,4 +1,3 @@
-
 const sequelize = require('./config/db');
 const Product = require('./models/Product');
 const User = require('./models/User');
@@ -8,33 +7,68 @@ const bcrypt = require('bcrypt');
 
 const products = [
   {
-    name: 'Men\'s T-Shirt',
-    description: 'A classic cotton t-shirt for men.',
-    price: 25,
-    image: 'https://via.placeholder.com/300',
-    category: 'men',
+    name: 'Anillo chapado en oro',
+    description: 'Anillo chapado en oro con zirconia',
+    price: 600,
+    image: '/uploads/1787087273690.jpg',
+    category: 'accessories'
   },
   {
-    name: 'Men\'s Jeans',
-    description: 'Stylish and comfortable jeans for men.',
-    price: 75,
-    image: 'https://via.placeholder.com/300',
-    category: 'men',
+    name: 'Playera sin mangas',
+    description: 'Playera sin mangas de verano',
+    price: 300,
+    image: '/uploads/1787087304210.jpg',
+    category: 'men'
   },
   {
-    name: 'Women\'s Dress',
-    description: 'A beautiful summer dress for women.',
-    price: 60,
-    image: 'https://via.placeholder.com/300',
-    category: 'women',
+    name: 'Camisa para playa',
+    description: 'Camisa para playa azul con blanco',
+    price: 400,
+    image: '/uploads/1787087379179.jpg',
+    category: 'men'
   },
   {
-    name: 'Women\'s Blouse',
-    description: 'An elegant blouse for women.',
-    price: 45,
-    image: 'https://via.placeholder.com/300',
-    category: 'women',
+    name: 'Camisa para playa cuadros',
+    description: 'Camisa para playa de cuadros',
+    price: 500,
+    image: '/uploads/1787087413991.jpg',
+    category: 'men'
   },
+  {
+    name: 'Vestido rojo',
+    description: 'Vestido de noche',
+    price: 800,
+    image: '/uploads/1787087448374.jpg',
+    category: 'women'
+  },
+  {
+    name: 'Vestido blanco',
+    description: 'Vestido para verano',
+    price: 800,
+    image: '/uploads/1787087465392.jpg',
+    category: 'women'
+  },
+  {
+    name: 'Vestido beige',
+    description: 'Vestido para verano',
+    price: 800,
+    image: '/uploads/1787087489262.jpg',
+    category: 'women'
+  },
+  {
+    name: 'Cadena de plata',
+    description: 'Cadena de plata .925',
+    price: 1800,
+    image: '/uploads/1787087529113.jpg',
+    category: 'accessories'
+  },
+  {
+    name: 'Pulsera de plata',
+    description: 'Pulsera de plata .925',
+    price: 800,
+    image: '/uploads/1787087548515.jpg',
+    category: 'accessories'
+  }
 ];
 
 const seedDatabase = async () => {

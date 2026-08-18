@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+const path = require('path');
 const { Sequelize } = require('sequelize');
 
 let sequelize;
@@ -7,7 +8,7 @@ let sequelize;
 if (process.env.USE_LOCAL_DB === 'true') {
   sequelize = new Sequelize({
     dialect: 'sqlite',
-    storage: './database.sqlite',
+    storage: path.join(__dirname, '..', 'database.sqlite'),
     logging: false
   });
 } else {

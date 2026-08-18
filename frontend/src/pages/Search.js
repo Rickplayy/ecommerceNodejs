@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import productService from '../services/productService';
 import ProductCard from '../components/ProductCard';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Spinner } from 'react-bootstrap';
 
 const Search = () => {
   const [products, setProducts] = useState([]);
@@ -30,20 +29,25 @@ const Search = () => {
   }, [query]);
 
   return (
-    <Container>
-      <h1>Search Results for "{query}"</h1>
+    <Container className="py-4">
+      <h1 className="mb-4 fw-bold">Search Results for "{query}"</h1>
       {loading ? (
-        <p>Loading...</p>
+        <div className="text-center py-5">
+          <Spinner animation="border" variant="primary" />
+          <p className="mt-2 text-muted">Searching products...</p>
+        </div>
       ) : (
-        <Row>
+        <Row className="g-4">
           {products.length > 0 ? (
             products.map((product) => (
-              <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+              <Col key={product.id || product._id} xs={12} sm={6} md={4} lg={3} className="d-flex align-items-stretch">
                 <ProductCard product={product} />
               </Col>
             ))
           ) : (
-            <p>No products found matching your search.</p>
+            <Col xs={12}>
+              <p className="text-muted text-center py-5">No products found matching your search.</p>
+            </Col>
           )}
         </Row>
       )}

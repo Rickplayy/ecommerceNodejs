@@ -1,69 +1,171 @@
-
 import React, { useState, useEffect } from 'react';
 import cartService from '../services/cartService';
-import { Container, ListGroup, Button, Row, Col, Image } from 'react-bootstrap';
+import { Container, ListGroup, Button, Row, Col, Image, Card } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import { Link } from 'react-router-dom';
 
 const Cart = () => {
   const [cart, setCart] = useState({ CartItems: [] });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchCart();
   }, []);
 
   const fetchCart = () => {
+    setLoading(true);
     cartService.getCart().then((response) => {
       setCart(response.data);
     }).catch(error => {
       console.error("Error fetching cart:", error);
       setCart({ CartItems: [] });
+    }).finally(() => {
+      setLoading(false);
     });
+  };
+
+  const handleQuantityChange = async (productId, newQuantity) => {
+    if (newQuantity <= 0) {
+      handleRemoveItem(productId);
+      return;
+    }
+    try {
+      await cartService.updateQuantity(productId, newQuantity);
+      fetchCart();
+    } catch (error) {
+      console.error("Error updating item quantity:", error);
+    }
   };
 
   const handleRemoveItem = async (productId) => {
     try {
       await cartService.deleteItem(productId);
-      fetchCart(); // Refresh cart after deletion
+      fetchCart();
     } catch (error) {
       console.error("Error removing item from cart:", error);
     }
   };
 
   const getTotalPrice = () => {
-    return cart.CartItems.reduce((total, item) => total + item.Product.price * item.quantity, 0);
+    if (!cart.CartItems) return 0;
+    return cart.CartItems.reduce((total, item) => total + (item.Product?.price || 0) * item.quantity, 0);
   };
 
   return (
-    <Container className="mt-5">
-      <h2>Shopping Cart</h2>
-      {cart.CartItems.length === 0 ? (
-        <p>Your cart is empty.</p>
-      ) : (
-        <>
-          <ListGroup>
-            {cart.CartItems.map((item) => (
-              <ListGroup.Item key={item.Product.id}>
-                <Row className="align-items-center">
-                  <Col md={2}>
-                    <Image src={cartService.BASE_URL + item.Product.image} alt={item.Product.name} fluid rounded />
-                  </Col>
-                  <Col md={4}>{item.Product.name}</Col>
-                  <Col md={2}>{item.Product && item.Product.price ? `$${item.Product.price}` : 'N/A'}</Col>
-                  <Col md={2}>Quantity: {item.quantity}</Col>
-                  <Col md={2}>
-                    <Button variant="danger" onClick={() => handleRemoveItem(item.Product.id)}>Remove</Button>
-                  </Col>
-                </Row>
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-          <div className="mt-3">
-            <h4>Total: ${getTotalPrice().toFixed(2)}</h4>
-            <LinkContainer to="/checkout">
-              <Button variant="primary">Checkout</Button>
-            </LinkContainer>
+    <Container className="py-5">
+      <h2 className="mb-4 fw-bold">Shopping Cart</h2>
+      {loading ? (
+        <p className="text-muted">Loading your cart...</p>
+      ) : !cart.CartItems || cart.CartItems.length === 0 ? (
+        <Card className="p-5 text-center shadow-sm border-0">
+          <h4 className="text-muted mb-3">Your cart is currently empty</h4>
+          <p className="text-muted">Explore our catalog and find great items for your wardrobe.</p>
+          <div>
+            <Link to="/" className="btn btn-primary px-4 py-2 rounded-pill">
+              Start Shopping
+            </Link>
           </div>
-        </>
+        </Card>
+      ) : (
+        <Row>
+          <Col lg={8}>
+            <ListGroup className="shadow-sm border-0 mb-4">
+              {cart.CartItems.map((item) => {
+                if (!item.Product) return null;
+                const imageUrl = item.Product.image
+                  ? (item.Product.image.startsWith('http') ? item.Product.image : `${cartService.BASE_URL}${item.Product.image}`)
+                  : 'https://via.placeholder.com/80?text=No+Image';
+
+                return (
+                  <ListGroup.Item key={item.Product.id} className="p-3">
+                    <Row className="align-items-center">
+                      <Col xs={3} sm={2}>
+                        <Image 
+                          src={imageUrl} 
+                          alt={item.Product.name} 
+                          fluid 
+                          rounded 
+                          style={{ 
+                            height: '80px', 
+                            width: '80px', 
+                            objectFit: 'contain', 
+                            backgroundColor: '#ffffff', 
+                            padding: '4px', 
+                            border: '1px solid #eee' 
+                          }}
+                        />
+                      </Col>
+                      <Col xs={9} sm={4}>
+                        <h5 className="mb-1 fs-6 fw-bold">{item.Product.name}</h5>
+                        <p className="text-muted small mb-0">${Number(item.Product.price).toFixed(2)} each</p>
+                      </Col>
+                      <Col xs={6} sm={3} className="mt-3 mt-sm-0">
+                        <div className="d-flex align-items-center">
+                          <Button 
+                            variant="outline-secondary" 
+                            size="sm" 
+                            style={{ width: '32px', height: '32px', padding: 0 }}
+                            onClick={() => handleQuantityChange(item.Product.id, item.quantity - 1)}
+                          >
+                            -
+                          </Button>
+                          <span className="mx-3 fw-bold fs-6">{item.quantity}</span>
+                          <Button 
+                            variant="outline-secondary" 
+                            size="sm" 
+                            style={{ width: '32px', height: '32px', padding: 0 }}
+                            onClick={() => handleQuantityChange(item.Product.id, item.quantity + 1)}
+                          >
+                            +
+                          </Button>
+                        </div>
+                      </Col>
+                      <Col xs={4} sm={2} className="mt-3 mt-sm-0 text-end text-sm-start">
+                        <span className="fw-bold fs-6 text-dark">
+                          ${(item.Product.price * item.quantity).toFixed(2)}
+                        </span>
+                      </Col>
+                      <Col xs={2} sm={1} className="mt-3 mt-sm-0 text-end">
+                        <Button 
+                          variant="outline-danger" 
+                          size="sm" 
+                          style={{ border: 'none' }}
+                          title="Remove item"
+                          onClick={() => handleRemoveItem(item.Product.id)}
+                        >
+                          ✕
+                        </Button>
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                );
+              })}
+            </ListGroup>
+          </Col>
+          <Col lg={4}>
+            <Card className="p-4 shadow-sm border-0">
+              <h4 className="fw-bold mb-3">Order Summary</h4>
+              <div className="d-flex justify-content-between mb-2">
+                <span className="text-muted">Subtotal</span>
+                <span>${getTotalPrice().toFixed(2)}</span>
+              </div>
+              <div className="d-flex justify-content-between mb-3">
+                <span className="text-muted">Shipping</span>
+                <span className="text-success fw-semibold">Free</span>
+              </div>
+              <hr />
+              <div className="d-flex justify-content-between mb-4">
+                <span className="fs-5 fw-bold">Total</span>
+                <span className="fs-5 fw-bold text-dark">${getTotalPrice().toFixed(2)}</span>
+              </div>
+              <LinkContainer to="/checkout">
+                <Button variant="primary" size="lg" className="w-100 py-3 rounded-pill fw-bold">
+                  Proceed to Checkout
+                </Button>
+              </LinkContainer>
+            </Card>
+          </Col>
+        </Row>
       )}
     </Container>
   );

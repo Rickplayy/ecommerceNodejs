@@ -10,6 +10,42 @@ router.get('/', async (req, res) => {
     const products = await Product.findAll();
     res.json(products);
   } catch (error) {
+    console.error('Error fetching all products:', error);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+});
+
+// Search products (MUST be defined before /:id)
+router.get('/search', async (req, res) => {
+  const { q } = req.query;
+  try {
+    if (!q || !q.trim()) {
+      return res.json([]);
+    }
+    const searchTerm = q.trim();
+    const products = await Product.findAll({
+      where: {
+        [Op.or]: [
+          { name: { [Op.like]: `%${searchTerm}%` } },
+          { description: { [Op.like]: `%${searchTerm}%` } },
+          { category: { [Op.like]: `%${searchTerm}%` } }
+        ]
+      }
+    });
+    res.json(products);
+  } catch (error) {
+    console.error('Error during search:', error);
+    res.status(500).json({ message: 'Something went wrong' });
+  }
+});
+
+// Get products by category
+router.get('/category/:category', async (req, res) => {
+  try {
+    const products = await Product.findAll({ where: { category: req.params.category } });
+    res.json(products);
+  } catch (error) {
+    console.error('Error fetching category products:', error);
     res.status(500).json({ message: 'Something went wrong' });
   }
 });
@@ -24,46 +60,12 @@ router.get('/:id', async (req, res) => {
       res.status(404).json({ message: 'Product not found' });
     }
   } catch (error) {
+    console.error('Error fetching product by ID:', error);
     res.status(500).json({ message: 'Something went wrong' });
   }
 });
 
-// Get products by category
-router.get('/category/:category', async (req, res) => {
-  try {
-    const products = await Product.findAll({ where: { category: req.params.category } });
-    res.json(products);
-  } catch (error) {
-    res.status(500).json({ message: 'Something went wrong' });
-  }
-});
-
-// Search products
-router.get('/search', async (req, res) => {
-    const { q } = req.query;
-    console.log('Searching for:', q);
-    try {
-        if (!q) {
-            console.log('No query provided.');
-            return res.json([]);
-        }
-        const products = await Product.findAll({
-            where: {
-                [Op.or]: [
-                    { name: { [Op.like]: `%${q}%` } },
-                    { description: { [Op.like]: `%${q}%` } }
-                ]
-            }
-        });
-        console.log('Found products:', products.length);
-        res.json(products);
-    } catch (error) {
-        console.error('Error during search:', error);
-        res.status(500).json({ message: 'Something went wrong' });
-    }
-});
-
-// Create a new product (admin only - add authentication middleware as needed)
+// Create a new product
 router.post('/', async (req, res) => {
   try {
     const product = await Product.create(req.body);

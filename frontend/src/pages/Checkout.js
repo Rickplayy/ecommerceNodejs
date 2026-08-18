@@ -42,10 +42,15 @@ const Checkout = () => {
     setCardInfo({ ...cardInfo, [name]: value });
   };
 
-  const handlePayment = (e) => {
+  const handlePayment = async (e) => {
     e.preventDefault();
     console.log('Processing payment...');
     setPaymentSuccess(true);
+    try {
+      await cartService.clearCart();
+    } catch (err) {
+      console.warn('Could not clear cart immediately:', err);
+    }
   };
 
   const downloadTicket = async () => {

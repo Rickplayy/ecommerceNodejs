@@ -17,11 +17,16 @@ const addProduct = (formData) => {
   return axios.post(API_URL + 'products', formData, getAuthHeaders('multipart/form-data'));
 };
 
+const updateProduct = (productId, formData) => {
+  return axios.put(API_URL + 'products/' + productId, formData, getAuthHeaders('multipart/form-data'));
+};
+
 const deleteProduct = (productId) => {
   return axios.delete(API_URL + 'products/' + productId, getAuthHeaders());
 };
 
 export default {
   addProduct,
+  updateProduct,
   deleteProduct,
 };

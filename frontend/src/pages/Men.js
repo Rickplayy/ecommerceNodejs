@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import productService from '../services/productService';
 import ProductCard from '../components/ProductCard';
@@ -14,11 +13,11 @@ const Men = () => {
   }, []);
 
   return (
-    <Container>
-      <h1 className="my-4">Men's Clothing</h1>
-      <Row>
+    <Container className="py-4">
+      <h1 className="mb-4 fw-bold">Men's Clothing</h1>
+      <Row className="g-4">
         {products.map((product) => (
-          <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+          <Col key={product.id || product._id} xs={12} sm={6} md={4} lg={3} className="d-flex align-items-stretch">
             <ProductCard product={product} />
           </Col>
         ))}
@@ -28,4 +27,3 @@ const Men = () => {
 };
 
 export default Men;
-

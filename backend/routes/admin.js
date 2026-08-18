@@ -14,7 +14,7 @@ let upload;
 if (process.env.USE_LOCAL_DB === 'true') {
   const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'public/uploads/')
+      cb(null, path.join(__dirname, '../public/uploads/'))
     },
     filename: function (req, file, cb) {
       cb(null, Date.now().toString() + path.extname(file.originalname))
@@ -65,6 +65,37 @@ router.post('/products', [auth, adminAuth, upload.single('image')], async (req, 
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Failed to create product' });
+  }
+});
+
+// Route to update a product
+router.put('/products/:id', [auth, adminAuth, upload.single('image')], async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const { name, description, price, category } = req.body;
+
+    const product = await Product.findByPk(productId);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    const updatedData = {
+      name: name !== undefined ? name : product.name,
+      description: description !== undefined ? description : product.description,
+      price: price !== undefined ? price : product.price,
+      category: category !== undefined ? category : product.category,
+    };
+
+    if (req.file) {
+      updatedData.image = req.file.location || `/uploads/${req.file.filename}`;
+    }
+
+    await product.update(updatedData);
+
+    res.status(200).json(product);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to update product' });
   }
 });
 
