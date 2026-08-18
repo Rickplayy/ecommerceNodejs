@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import { Card, Button, Alert } from 'react-bootstrap';
 import cartService from '../services/cartService';
 
+const CATEGORY_NAMES = {
+  men: 'Hombre',
+  women: 'Mujer',
+  accessories: 'Accesorios'
+};
+
 const ProductCard = ({ product }) => {
   const [message, setMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(true);
@@ -10,19 +16,19 @@ const ProductCard = ({ product }) => {
     cartService.addToCart(product.id, 1)
       .then(() => {
         setIsSuccess(true);
-        setMessage('Added to cart!');
+        setMessage('¡Agregado al carrito!');
         setTimeout(() => setMessage(''), 2000);
       })
       .catch(() => {
         setIsSuccess(false);
-        setMessage('Please log in first.');
+        setMessage('Por favor inicia sesión primero.');
         setTimeout(() => setMessage(''), 2500);
       });
   };
 
   const imageUrl = product.image 
     ? (product.image.startsWith('http') ? product.image : `${cartService.BASE_URL}${product.image}`)
-    : 'https://via.placeholder.com/300x220?text=No+Image';
+    : 'https://via.placeholder.com/300x220?text=Sin+Imagen';
 
   return (
     <Card className="h-100 shadow-sm border-0 d-flex flex-column rounded-3 overflow-hidden w-100 bg-white">
@@ -51,7 +57,7 @@ const ProductCard = ({ product }) => {
           }}
           onError={(e) => {
             e.target.onerror = null;
-            e.target.src = 'https://via.placeholder.com/300x220?text=No+Image';
+            e.target.src = 'https://via.placeholder.com/300x220?text=Sin+Imagen';
           }}
         />
       </div>
@@ -62,7 +68,7 @@ const ProductCard = ({ product }) => {
           </Card.Title>
           {product.category && (
             <span className="badge bg-light text-secondary text-uppercase border" style={{ fontSize: '0.7rem' }}>
-              {product.category}
+              {CATEGORY_NAMES[product.category] || product.category}
             </span>
           )}
         </div>
@@ -93,12 +99,13 @@ const ProductCard = ({ product }) => {
           </Alert>
         )}
 
+        {/* Distinct Add to Cart button */}
         <Button 
           variant="primary" 
           onClick={handleAddToCart}
-          className="mt-auto w-100 py-2 fw-semibold rounded-pill"
+          className="mt-auto w-100 py-2 fw-semibold rounded-pill shadow-sm"
         >
-          Add to Cart
+          Agregar al Carrito
         </Button>
       </Card.Body>
     </Card>

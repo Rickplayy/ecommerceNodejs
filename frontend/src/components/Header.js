@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Navbar, Nav, Container, NavDropdown, Form, FormControl, Button } from 'react-bootstrap';
@@ -23,65 +22,69 @@ const Header = ({ currentUser, onLogout }) => {
   };
 
   return (
-    <Navbar bg="dark" variant="dark" expand="lg">
+    <Navbar bg="dark" variant="dark" expand="lg" className="py-2 shadow-sm">
       <Container>
-        <Navbar.Brand style={{cursor: "default"}}>
-          <img
-            src="/logotipo.png"
-            width="60"
-            height="60"
-            className="d-inline-block align-middle"
-            alt="ROCKPA logo"
-          />{' '}
-          <span className="align-middle">ROCKPA</span>
-        </Navbar.Brand>
+        <LinkContainer to="/">
+          <Navbar.Brand style={{ cursor: "pointer" }} className="d-flex align-items-center">
+            <img
+              src="/logotipo.png"
+              width="50"
+              height="50"
+              className="d-inline-block me-2"
+              alt="ROCKPA logo"
+            />
+            <span className="fw-bold tracking-wide">ROCKPA</span>
+          </Navbar.Brand>
+        </LinkContainer>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <LinkContainer to="/men">
-              <Nav.Link>Men</Nav.Link>
+              <Nav.Link>Hombre</Nav.Link>
             </LinkContainer>
             <LinkContainer to="/women">
-              <Nav.Link>Women</Nav.Link>
+              <Nav.Link>Mujer</Nav.Link>
             </LinkContainer>
             <LinkContainer to="/accessories">
-              <Nav.Link>Accessories</Nav.Link>
+              <Nav.Link>Accesorios</Nav.Link>
             </LinkContainer>
           </Nav>
-          <Form onSubmit={submitHandler} className="d-flex">
+          <Form onSubmit={submitHandler} className="d-flex my-2 my-lg-0">
             <FormControl
               type="search"
-              placeholder="Search Products..."
+              placeholder="Buscar productos..."
               className="me-2"
-              aria-label="Search"
+              aria-label="Buscar"
               onChange={(e) => setKeyword(e.target.value)}
             />
-            <Button type="submit" variant="outline-success">Search</Button>
+            <Button type="submit" variant="primary" className="fw-semibold px-3">
+              Buscar
+            </Button>
           </Form>
-          <Nav className="ms-3">
+          <Nav className="ms-lg-3">
             {currentUser ? (
               <>
                 {currentUser.role === 'admin' && (
                   <LinkContainer to="/admin">
-                    <Nav.Link>Admin</Nav.Link>
+                    <Nav.Link className="text-warning fw-semibold">Administración</Nav.Link>
                   </LinkContainer>
                 )}
                 {currentUser.role !== 'admin' && (
                   <LinkContainer to="/cart">
-                    <Nav.Link>Cart</Nav.Link>
+                    <Nav.Link>Carrito 🛒</Nav.Link>
                   </LinkContainer>
                 )}
                 <NavDropdown title={currentUser.name} id="basic-nav-dropdown">
-                  <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+                  <NavDropdown.Item onClick={handleLogout}>Cerrar Sesión</NavDropdown.Item>
                 </NavDropdown>
               </>
             ) : (
               <>
                 <LinkContainer to="/login">
-                  <Nav.Link>Login</Nav.Link>
+                  <Nav.Link>Iniciar Sesión</Nav.Link>
                 </LinkContainer>
                 <LinkContainer to="/register">
-                  <Nav.Link>Register</Nav.Link>
+                  <Nav.Link>Registrarse</Nav.Link>
                 </LinkContainer>
               </>
             )}
@@ -93,4 +96,3 @@ const Header = ({ currentUser, onLogout }) => {
 };
 
 export default Header;
-

@@ -14,7 +14,7 @@ const Men = () => {
 
   return (
     <Container className="py-4">
-      <h1 className="mb-4 fw-bold">Men's Clothing</h1>
+      <h1 className="mb-4 fw-bold">Ropa para Hombre</h1>
       <Row className="g-4">
         {products.map((product) => (
           <Col key={product.id || product._id} xs={12} sm={6} md={4} lg={3} className="d-flex align-items-stretch">

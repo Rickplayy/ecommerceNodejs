@@ -30,11 +30,11 @@ const Search = () => {
 
   return (
     <Container className="py-4">
-      <h1 className="mb-4 fw-bold">Search Results for "{query}"</h1>
+      <h1 className="mb-4 fw-bold">Resultados de búsqueda para "{query}"</h1>
       {loading ? (
         <div className="text-center py-5">
           <Spinner animation="border" variant="primary" />
-          <p className="mt-2 text-muted">Searching products...</p>
+          <p className="mt-2 text-muted">Buscando productos...</p>
         </div>
       ) : (
         <Row className="g-4">
@@ -46,7 +46,7 @@ const Search = () => {
             ))
           ) : (
             <Col xs={12}>
-              <p className="text-muted text-center py-5">No products found matching your search.</p>
+              <p className="text-muted text-center py-5">No se encontraron productos coincidentes con tu búsqueda.</p>
             </Col>
           )}
         </Row>

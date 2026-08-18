@@ -13,7 +13,7 @@ const CartItem = require('../models/CartItem');
 
 router.post('/generate-pdf', auth, async (req, res) => {
     try {
-        const { items, total, last4 } = req.body;
+        const { items, total, last4, bank } = req.body;
         const userId = req.userData.userId;
 
         const user = await User.findByPk(userId);
@@ -31,11 +31,12 @@ router.post('/generate-pdf', auth, async (req, res) => {
 
         const data = {
             items,
-            total: total.toFixed(2),
+            total: Number(total).toFixed(2),
             subtotal: subtotal.toFixed(2),
             tax: tax.toFixed(2),
             customerName: user.name, // Use user's name from DB
             last4,
+            bank: bank || 'Tarjeta Bancaria',
             orderId: Math.floor(Math.random() * 1000000),
             date: new Date().toLocaleDateString(),
             logoDataUri

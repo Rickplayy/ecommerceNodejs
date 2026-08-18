@@ -53,16 +53,16 @@ const Cart = () => {
 
   return (
     <Container className="py-5">
-      <h2 className="mb-4 fw-bold">Shopping Cart</h2>
+      <h2 className="mb-4 fw-bold">Carrito de Compras</h2>
       {loading ? (
-        <p className="text-muted">Loading your cart...</p>
+        <p className="text-muted">Cargando tu carrito...</p>
       ) : !cart.CartItems || cart.CartItems.length === 0 ? (
         <Card className="p-5 text-center shadow-sm border-0">
-          <h4 className="text-muted mb-3">Your cart is currently empty</h4>
-          <p className="text-muted">Explore our catalog and find great items for your wardrobe.</p>
+          <h4 className="text-muted mb-3">Tu carrito está actualmente vacío</h4>
+          <p className="text-muted">Explora nuestro catálogo y encuentra artículos para tu guardarropa.</p>
           <div>
-            <Link to="/" className="btn btn-primary px-4 py-2 rounded-pill">
-              Start Shopping
+            <Link to="/" className="btn btn-primary px-4 py-2 fw-semibold">
+              Empezar a Comprar
             </Link>
           </div>
         </Card>
@@ -74,7 +74,7 @@ const Cart = () => {
                 if (!item.Product) return null;
                 const imageUrl = item.Product.image
                   ? (item.Product.image.startsWith('http') ? item.Product.image : `${cartService.BASE_URL}${item.Product.image}`)
-                  : 'https://via.placeholder.com/80?text=No+Image';
+                  : 'https://via.placeholder.com/80?text=Sin+Imagen';
 
                 return (
                   <ListGroup.Item key={item.Product.id} className="p-3">
@@ -97,7 +97,7 @@ const Cart = () => {
                       </Col>
                       <Col xs={9} sm={4}>
                         <h5 className="mb-1 fs-6 fw-bold">{item.Product.name}</h5>
-                        <p className="text-muted small mb-0">${Number(item.Product.price).toFixed(2)} each</p>
+                        <p className="text-muted small mb-0">${Number(item.Product.price).toFixed(2)} c/u</p>
                       </Col>
                       <Col xs={6} sm={3} className="mt-3 mt-sm-0">
                         <div className="d-flex align-items-center">
@@ -130,7 +130,7 @@ const Cart = () => {
                           variant="outline-danger" 
                           size="sm" 
                           style={{ border: 'none' }}
-                          title="Remove item"
+                          title="Eliminar artículo"
                           onClick={() => handleRemoveItem(item.Product.id)}
                         >
                           ✕
@@ -144,14 +144,14 @@ const Cart = () => {
           </Col>
           <Col lg={4}>
             <Card className="p-4 shadow-sm border-0">
-              <h4 className="fw-bold mb-3">Order Summary</h4>
+              <h4 className="fw-bold mb-3">Resumen del Pedido</h4>
               <div className="d-flex justify-content-between mb-2">
                 <span className="text-muted">Subtotal</span>
                 <span>${getTotalPrice().toFixed(2)}</span>
               </div>
               <div className="d-flex justify-content-between mb-3">
-                <span className="text-muted">Shipping</span>
-                <span className="text-success fw-semibold">Free</span>
+                <span className="text-muted">Envío</span>
+                <span className="text-success fw-semibold">Gratis</span>
               </div>
               <hr />
               <div className="d-flex justify-content-between mb-4">
@@ -159,8 +159,8 @@ const Cart = () => {
                 <span className="fs-5 fw-bold text-dark">${getTotalPrice().toFixed(2)}</span>
               </div>
               <LinkContainer to="/checkout">
-                <Button variant="primary" size="lg" className="w-100 py-3 rounded-pill fw-bold">
-                  Proceed to Checkout
+                <Button variant="primary" size="lg" className="w-100 py-3 fw-bold">
+                  Proceder al Pago
                 </Button>
               </LinkContainer>
             </Card>
