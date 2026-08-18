@@ -48,7 +48,7 @@ router.post('/generate-pdf', auth, async (req, res) => {
             headless: true,
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         };
-        if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+        if (process.env.PUPPETEER_EXECUTABLE_PATH && fs.existsSync(process.env.PUPPETEER_EXECUTABLE_PATH)) {
             launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
         }
         const browser = await puppeteer.launch(launchOptions);
