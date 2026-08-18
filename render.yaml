@@ -3,25 +3,9 @@ services:
     name: ecommerce-backend
     env: node
     plan: free
-    buildCommand: cp -r backend/* /opt/render/project/src/ && cd /opt/render/project/src && npm install --production
-    buildFilter:
-      paths:
-        - backend/**/*
-    dockerCommand: apt-get update -y && apt-get install -y chromium
-    startCommand: node /opt/render/project/src/index.js
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
     envVars:
-      - key: DATABASE_URL
-        sync: false
       - key: NODE_ENV
         value: production
-      - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
-        value: "true"
-      - key: PUPPETEER_EXECUTABLE_PATH
-        value: /usr/bin/chromium
-  
-  - type: web
-    name: ecommerce-frontend
-    env: static
-    rootDir: frontend
-    buildCommand: npm run install-frontend && npm run build-frontend
-    staticPublishPath: ./build
